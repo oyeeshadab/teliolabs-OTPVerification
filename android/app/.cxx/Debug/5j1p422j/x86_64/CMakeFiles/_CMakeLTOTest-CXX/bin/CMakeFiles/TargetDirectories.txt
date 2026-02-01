@@ -1,0 +1,4 @@
+/Users/apple/Projects/OtpVerification/android/app/.cxx/Debug/5j1p422j/x86_64/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir
+/Users/apple/Projects/OtpVerification/android/app/.cxx/Debug/5j1p422j/x86_64/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir
+/Users/apple/Projects/OtpVerification/android/app/.cxx/Debug/5j1p422j/x86_64/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/edit_cache.dir
+/Users/apple/Projects/OtpVerification/android/app/.cxx/Debug/5j1p422j/x86_64/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/rebuild_cache.dir
