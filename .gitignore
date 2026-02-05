@@ -43,6 +43,9 @@ android/app/debug/
 
 # Native build / CMake / NDK (CRITICAL)
 android/app/.cxx/
+.cxx/
+build/
+.gradle/
 android/app/.externalNativeBuild/
 android/app/.ninja*
 android/app/**/.ninja_*
