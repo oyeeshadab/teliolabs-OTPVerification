@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Pressable, Animated, StyleSheet, View, Text } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
+import { showLocalNotification } from '../../utils/notification';
 
 const WIDTH = 60;
 const HEIGHT = 32;
@@ -18,8 +19,17 @@ export const ThemeToggle = () => {
     }).start();
   }, [theme.mode, translateX]);
 
+  const onPress = () => {
+    console.log('🚀 ~ onPress ~ theme:', theme);
+    toggleTheme();
+    showLocalNotification(
+      'Theme Changed',
+      `Switched to ${theme.mode === 'dark' ? 'light' : 'dark'} mode`,
+    );
+  };
+
   return (
-    <Pressable onPress={toggleTheme} style={styles.wrapper}>
+    <Pressable onPress={onPress} style={styles.wrapper}>
       <View
         style={[
           styles.track,

@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppNavigator } from './src/navigation/AppNavigator';
+import { RootNavigator } from './src/navigation/RootNavigator';
 import { ThemeProvider, useTheme } from './src/theme/ThemeProvider';
+import {
+  getFcmToken,
+  registerForegroundHandler,
+  requestNotificationPermission,
+} from './src/utils/notification';
+import { ToastProvider } from './src/components/Toast/ToastProvider';
+import { createTables } from './src/database/migrations';
+
 const AppContent = () => {
   const { theme } = useTheme();
+
+  useEffect(() => {
+    registerForegroundHandler();
+  }, []);
 
   return (
     <>
@@ -13,16 +25,24 @@ const AppContent = () => {
         translucent
         backgroundColor="transparent"
       />
-      <AppNavigator />
+      <RootNavigator />
     </>
   );
 };
 
 const App = () => {
+  useEffect(() => {
+    requestNotificationPermission();
+    createTables()
+      .then(() => console.log('DB ready'))
+      .catch(err => console.error(err));
+  }, []);
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AppContent />
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

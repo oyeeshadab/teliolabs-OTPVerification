@@ -28,30 +28,49 @@ pnpm-debug.log*
 .react-native/
 
 # ========================
-# Android
+# Android (React Native)
 # ========================
-android/.gradle
-android/build
-android/app/build
+android/.gradle/
+android/build/
 android/local.properties
-android/.idea
+android/.idea/
 android/*.iml
-android/app/debug
-android/app/release
+
+# App build outputs
+android/app/build/
+android/app/release/
+android/app/debug/
+
+# Native build / CMake / NDK (CRITICAL)
+android/app/.cxx/
+.cxx/
+build/
+.gradle/
+android/app/.externalNativeBuild/
+android/app/.ninja*
+android/app/**/.ninja_*
+android/app/**/CMakeFiles/
+android/app/**/build.ninja
+android/app/**/compile_commands.json*
+android/app/**/.cmake/
+
+# Keystore
+android/app/debug.keystore
+*.keystore
 
 # ========================
 # iOS
 # ========================
-ios/Pods
-ios/build
-ios/DerivedData
+ios/Pods/
+ios/build/
+ios/DerivedData/
 ios/*.xcworkspace
 !ios/*.xcworkspace/contents.xcworkspacedata
 ios/*.xcodeproj/*
 !ios/*.xcodeproj/project.pbxproj
-!ios/*.xcodeproj/xcshareddata
+!ios/*.xcodeproj/xcshareddata/
 ios/*.xcuserstate
-ios/.xcuserdatad
+ios/.xcuserdatad/
 
 # ========================
 # Fastlane
