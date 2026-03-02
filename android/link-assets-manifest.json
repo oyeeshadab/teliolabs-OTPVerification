@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/AlumniSansPinstripe-Italic.ttf",
+      "sha1": "8c011548f83edd1d9540b2ba400a0ee346849c7f"
+    },
+    {
+      "path": "src/assets/fonts/AlumniSansPinstripe-Regular.ttf",
+      "sha1": "b0fff4373e1f4f82a274fb630023e6d8db9595fe"
+    },
+    {
+      "path": "src/assets/fonts/PoiretOne-Regular.ttf",
+      "sha1": "75769d8c5e3ff4a2cd158b8c1ed59bb5ecea8c8a"
+    },
+    {
+      "path": "src/assets/fonts/Delius-Regular.ttf",
+      "sha1": "49ee4a09aa824e4b36701b7ca2edde5fe8364750"
+    }
+  ]
+}

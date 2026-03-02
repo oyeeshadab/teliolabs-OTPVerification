@@ -2,26 +2,18 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
-import { ThemeProvider, useTheme } from './src/theme/ThemeProvider';
-import {
-  getFcmToken,
-  registerForegroundHandler,
-  requestNotificationPermission,
-} from './src/utils/notification';
+import { ThemeProvider } from './src/theme/ThemeProvider';
+import { requestNotificationPermission } from './src/utils/notification';
 import { ToastProvider } from './src/components/Toast/ToastProvider';
-import { createTables } from './src/database/migrations';
+import { initDatabase } from './src/database';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PortalProvider } from '@gorhom/portal';
 
 const AppContent = () => {
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    registerForegroundHandler();
-  }, []);
-
   return (
     <>
       <StatusBar
-        barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
+        barStyle={'light-content'}
         translucent
         backgroundColor="transparent"
       />
@@ -33,18 +25,20 @@ const AppContent = () => {
 const App = () => {
   useEffect(() => {
     requestNotificationPermission();
-    createTables()
-      .then(() => console.log('DB ready'))
-      .catch(err => console.error(err));
+    initDatabase();
   }, []);
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <ToastProvider>
-          <AppContent />
-        </ToastProvider>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView>
+      <PortalProvider>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <AppContent />
+            </ToastProvider>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </PortalProvider>
+    </GestureHandlerRootView>
   );
 };
 

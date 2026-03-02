@@ -56,6 +56,7 @@ export const useWelcomeAnimation = () => {
         }),
       ]),
     ).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ export const useWelcomeAnimation = () => {
         show('🪄 Secret Locked again! 🪄\n Make the magic happen', 5000);
       }, 5000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [titlePressed, blobTaps]);
 
   const floatingStyle = {

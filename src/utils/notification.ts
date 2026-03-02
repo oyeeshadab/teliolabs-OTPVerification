@@ -21,6 +21,7 @@ export async function createNotificationChannel() {
 export async function requestNotificationPermission() {
   await notifee.requestPermission();
   await messaging().requestPermission();
+  registerForegroundHandler();
 }
 
 /**
@@ -67,8 +68,8 @@ export async function showLocalNotification(
 export function registerForegroundHandler() {
   return messaging().onMessage(async remoteMessage => {
     const title =
-      remoteMessage.data?.title ||
-      remoteMessage.notification?.title ||
+      remoteMessage?.data?.title ||
+      remoteMessage?.notification?.title ||
       'Notification';
 
     const body =
@@ -83,7 +84,6 @@ export function registerForegroundHandler() {
  * MUST be outside component (index.js)
  */
 export async function backgroundMessageHandler(remoteMessage: any) {
-  console.log('🚀 ~ backgroundMessageHandler ~ remoteMessage:', remoteMessage);
   const title =
     remoteMessage.data?.title ||
     remoteMessage.notification?.title ||

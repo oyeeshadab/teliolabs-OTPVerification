@@ -6,10 +6,14 @@ import {
   Dimensions,
   TouchableOpacity,
   Easing,
+  View,
+  StatusBar,
 } from 'react-native';
-import { styles } from './styles';
+import { useStyle } from './styles';
 import { useWelcomeAnimation } from './useWelcomeAnimation';
-import { insertUser, getUsers } from '../../database/user.repository';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { useTheme } from '../../theme/ThemeProvider';
+import Wrapper from '../../components/Wrapper/Wrapper';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -17,7 +21,6 @@ const WelcomeScreen = ({ navigation }: any) => {
   const {
     fade,
     scale,
-    blobTaps,
     translateY,
     titlePressed,
     activeBlobBig,
@@ -27,6 +30,9 @@ const WelcomeScreen = ({ navigation }: any) => {
     setBlobTaps,
     secretUnlocked,
   } = useWelcomeAnimation();
+
+  const { theme } = useTheme();
+  const styles = useStyle(theme);
 
   const swipeY = React.useRef(new Animated.Value(0)).current;
 
@@ -58,9 +64,8 @@ const WelcomeScreen = ({ navigation }: any) => {
             duration: 420,
             useNativeDriver: true,
           }).start(() => {
-            // navigation.replace('SecretNavigator');
             navigation.replace('SecretNavigator', {
-              screen: 'Target',
+              screen: 'Home',
             });
           });
         } else {
@@ -78,98 +83,85 @@ const WelcomeScreen = ({ navigation }: any) => {
     outputRange: ['0deg', '360deg'],
   });
 
-  const saveUser = async () => {
-    await insertUser('Shadab', Math.floor(Math.random() * 99999) + 1);
-  };
-
-  const loadUsers = async () => {
-    const users = await getUsers();
-    console.log(users);
-  };
-
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          transform: [{ translateY: swipeY }],
-        },
-      ]}
-      {...(secretUnlocked ? panResponder.panHandlers : {})}
-    >
-      {/* Floating Magical Blobs */}
-
-      <TouchableOpacity
-        activeOpacity={1}
-        onLongPress={() => {
-          if (!titlePressed) return;
-          setActiveBlobBig(true);
-        }}
-        delayLongPress={3000}
-        style={[styles.touchWrapper, styles.blobBig, floatingStyle]}
+    <Wrapper>
+      <StatusBar
+        barStyle={theme.mode === 'dark' ? 'light-content' : 'light-content'}
+        translucent
+        backgroundColor="transparent"
       />
-
-      <Animated.View
-        style={[styles.blobAccent, floatingStyle]}
-        onTouchEnd={() => setBlobTaps(prev => prev + 1)}
-      />
-
-      {/* Main Content */}
       <Animated.View
         style={[
-          styles.content,
+          styles.container,
           {
-            opacity: fade,
-            transform: [{ translateY }, { scale }],
+            transform: [{ translateY: swipeY }],
           },
         ]}
+        {...(secretUnlocked ? panResponder.panHandlers : {})}
       >
-        <Text
-          style={styles.title}
-          onLongPress={() => setTitlePressed(true)}
-          // delayLongPress={1200}
-        >
-          Welcome
-        </Text>
-
-        <Text style={styles.subtitle}>
-          A calm, secure and delightful start
-          {'\n'}to your authentication journey.
-        </Text>
+        {/* Floating Magical Blobs */}
 
         <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.button}
-          onPress={
-            activeBlobBig
-              ? () => setBlobTaps(prev => prev + 1)
-              : () => {
-                  // navigation.replace('Login');
-                  saveUser();
-                  setTimeout(() => {
-                    loadUsers();
-                  }, 3000);
-                }
-          }
+          activeOpacity={1}
+          onLongPress={() => {
+            if (!titlePressed) return;
+            setActiveBlobBig(true);
+            ReactNativeHapticFeedback.trigger('notificationSuccess');
+          }}
+          delayLongPress={3000}
+          style={[styles.touchWrapper, styles.blobBig, floatingStyle]}
+        />
+
+        <Animated.View
+          style={[styles.blobAccent, floatingStyle]}
+          onTouchEnd={() => {
+            activeBlobBig && setBlobTaps(prev => prev + 1);
+          }}
+        />
+
+        {/* Main Content */}
+        <Animated.View
+          style={[
+            styles.content,
+            {
+              opacity: fade,
+              transform: [{ translateY }, { scale }],
+            },
+          ]}
         >
-          <Text style={styles.buttonText}>
-            {blobTaps >= 4
-              ? 'Swipe up to unlock the magic!🪄'
-              : activeBlobBig
-              ? 'Secret Unlocked!'
-              : 'Get In'}
+          <TouchableOpacity
+            activeOpacity={1}
+            onLongPress={() => {
+              ReactNativeHapticFeedback.trigger('notificationError');
+              setTitlePressed(true);
+            }}
+            delayLongPress={3000}
+          >
+            <Text style={styles.title}>Welcome</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.subtitle}>
+            A calm, secure and delightful start
+            {'\n'}to your authentication journey.
           </Text>
-        </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.button}
+            onPress={() => navigation.replace('Login')}
+          >
+            <Text style={styles.buttonText}>Get In</Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Animated.View
+          style={[
+            styles.blobAccent2,
+            floatingStyle,
+            { transform: [{ rotate: spin }] },
+          ]}
+        />
       </Animated.View>
-      <Animated.View
-        style={[
-          styles.blobAccent2,
-          floatingStyle,
-          { transform: [{ rotate: spin }] },
-        ]}
-        onTouchEnd={() => setBlobTaps(prev => prev + 1)}
-      />
-    </Animated.View>
+    </Wrapper>
   );
 };
 
