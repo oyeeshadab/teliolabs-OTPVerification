@@ -35,7 +35,9 @@ export const AmountCalculator = ({
   amount: number;
   setAmount: Dispatch<SetStateAction<number>>;
 }) => {
+  console.log('🚀 ~ AmountCalculator ~ amount:', amount);
   const { expression, appendValue, deleteLast } = useCalculator({
+    amount,
     setAmount,
   });
 
@@ -77,7 +79,7 @@ export const AmountCalculator = ({
                 color="#ffffff"
                 weight="deliusR"
               >
-                ₹{Number(amount).toFixed(2)}
+                ₹{Number(expression || '0').toFixed(2)}
               </Text>
             </View>
             <View

@@ -148,7 +148,7 @@ const WelcomeScreen = ({ navigation }: any) => {
           <TouchableOpacity
             activeOpacity={0.5}
             style={styles.button}
-            onPress={() => navigation.replace('Login')}
+            onPress={() => navigation.navigate('Home')}
           >
             <Text style={styles.buttonText}>Get In</Text>
           </TouchableOpacity>

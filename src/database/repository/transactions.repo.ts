@@ -35,11 +35,56 @@ export const TransactionRepo = {
     }
   },
 
+  updateTransaction: async (payload: Transaction) => {
+    if (!payload.id) {
+      throw new Error('Transaction ID is required for update.');
+    }
+
+    try {
+      const db = await getDB();
+
+      const datetime = payload.datetime || new Date().toISOString();
+
+      const res = await db.executeSql(
+        `UPDATE transactions
+         SET title = ?,
+             amount = ?,
+             type = ?,
+             category_id = ?,
+             note = ?,
+             datetime = ?
+         WHERE id = ?`,
+        [
+          payload.title,
+          payload.amount,
+          payload.type,
+          payload.category_id,
+          payload.note || '',
+          datetime,
+          payload.id, // important: specify the transaction to update
+        ],
+      );
+
+      return {
+        success: true,
+        rowsAffected: res[0].rowsAffected,
+      };
+    } catch (error) {
+      console.log('updateTransaction error', error);
+
+      return {
+        success: false,
+      };
+    }
+  },
+
   getCurrentMonthTransactions: async (): Promise<CurrentMonthTxResponse> => {
     const db = await getDB();
+
     const tx = await db.executeSql(`
-      SELECT 
+    SELECT 
       t.*,
+      date(t.datetime) as tx_date,
       c.id as category_id,
       c.name as category_name,
       c.icon as category_icon,
@@ -61,8 +106,19 @@ export const TransactionRepo = {
     AND datetime < date('now','start of month','+1 month')
   `);
 
+    const transactions = tx[0].rows.raw();
+
+    // 🔥 Group by date
+    const groupedByDate = transactions.reduce((acc: any, curr: any) => {
+      if (!acc[curr.tx_date]) {
+        acc[curr.tx_date] = [];
+      }
+      acc[curr.tx_date].push(curr);
+      return acc;
+    }, {});
+
     return {
-      transactions: tx[0].rows.raw(),
+      transactions: groupedByDate,
       summary: summary[0].rows.item(0),
     };
   },

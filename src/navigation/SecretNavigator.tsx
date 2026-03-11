@@ -7,6 +7,7 @@ import FinanceTracker from '@screens/Secret/FinanceTracker/Home/FinanceTracker';
 export type RootStackParamList = {
   Target: undefined;
   FinanceHome: undefined;
+  FinanceTracker: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -51,6 +51,7 @@ export const RootNavigator = () => {
 
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
+        // initialRouteName={isSecretLoggedIn ? 'AppNavigator' : 'AppNavigator'}
         initialRouteName={isSecretLoggedIn ? 'SecretNavigator' : 'AppNavigator'}
       >
         <Stack.Screen name="SecretNavigator">

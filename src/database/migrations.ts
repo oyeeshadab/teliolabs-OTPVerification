@@ -50,17 +50,6 @@ export const runMigrations = async () => {
       FOREIGN KEY (category_id) REFERENCES categories(id)
     );
   `);
-  // await db.executeSql(`
-  //   INSERT OR IGNORE INTO transactions (
-  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //     datetime TEXT NOT NULL,
-  //     amount REAL NOT NULL,
-  //     type TEXT NOT NULL,
-  //     category_id INTEGER,
-  //     note TEXT,
-  //     FOREIGN KEY (category_id) REFERENCES categories(id)
-  //   );
-  // `);
 
   await db.executeSql(`
     CREATE TABLE IF NOT EXISTS categories (
@@ -72,41 +61,20 @@ export const runMigrations = async () => {
     );
   `);
 
-  await db.executeSql(
-    `
-    INSERT INTO categories (name, icon,iconLibrary, color)
-    VALUES (?, ?, ?,?);
-  `,
-    ['Groceries3', 'Grocery', 'Ionicons', '#C4B6E9'],
-  );
-  await db.executeSql(
-    `
-    INSERT INTO categories (name, icon,iconLibrary, color)
-    VALUES (?, ?, ?,?);
-  `,
-    ['Shopping2', 'Shoppping', 'Feather', '#BE96FA'],
-  );
-  await db.executeSql(
-    `
-    INSERT INTO categories (name, icon,iconLibrary, color)
-    VALUES (?, ?, ?,?);
-  `,
-    ['Transit2', 'Transit', 'Fontisto', '#61A5DE'],
-  );
-  await db.executeSql(
-    `
-    INSERT INTO categories (name, icon,iconLibrary, color)
-    VALUES (?, ?, ?,?);
-  `,
-    ['Entertainment2', 'Entertainment', 'EvilIcons', '#D689B9'],
-  );
-  await db.executeSql(
-    `
-    INSERT INTO categories (name, icon,iconLibrary, color)
-    VALUES (?, ?, ?,?);
-  `,
-    ['Bills2', 'Bills', 'Fontisto', '#73CA65'],
-  );
+  const defaultCategories = [
+    ['Groceries', 'Grocery', 'Ionicons', '#C4B6E9'],
+    ['Shopping', 'Shopping', 'Feather', '#BE96FA'],
+    ['Transit', 'Transit', 'Fontisto', '#61A5DE'],
+    ['Entertainment', 'Entertainment', 'EvilIcons', '#D689B9'],
+    ['Bills', 'Bills', 'Fontisto', '#73CA65'],
+  ];
+
+  for (const category of defaultCategories) {
+    await db.executeSql(
+      `INSERT OR IGNORE INTO categories (name, icon, iconLibrary, color) VALUES (?, ?, ?, ?)`,
+      category,
+    );
+  }
 
   await db.executeSql(`
     CREATE TABLE IF NOT EXISTS secretUser (

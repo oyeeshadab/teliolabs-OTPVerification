@@ -25,7 +25,8 @@ interface Props {
   onSelect: (item: CategoryItem, event: GestureResponderEvent) => void;
 }
 
-export const CategoryGrid = ({ onSelect }: Props) => {
+export const CategoryGrid = React.memo(({ onSelect }: Props) => {
+  // export const CategoryGrid = ({ onSelect }: Props) => {
   const { data, loading, keyExtractor } = useCategoryGrid();
   const renderItem = useCallback(
     ({ item }: { item: CategoryItem }) => (
@@ -38,7 +39,7 @@ export const CategoryGrid = ({ onSelect }: Props) => {
           <CategoryIcon icon_name={item.icon} />
         </TouchableOpacity>
 
-        <Text style={styles.label} numberOfLines={1} color="#ffffff">
+        <Text style={styles.label} numberOfLines={1} color={'#ffffff'}>
           {item.name}
         </Text>
       </View>
@@ -69,4 +70,4 @@ export const CategoryGrid = ({ onSelect }: Props) => {
       )}
     </View>
   );
-};
+});

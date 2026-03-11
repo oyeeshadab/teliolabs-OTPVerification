@@ -29,15 +29,20 @@ export interface Transaction {
   datetime?: string;
   amount: number;
   type: TransactionType;
-  category_id: number;
+  category_id?: number;
   note?: string;
   category_name?: string;
-  category_icon: string;
-  category_color: string;
+  category_icon?: string;
+  category_color?: string;
+}
+
+export interface TransactionSection {
+  title: string;
+  data: Transaction[];
 }
 
 export interface CurrentMonthTxResponse {
-  transactions: Transaction[];
+  transactions: Record<string, Transaction[]>;
   summary: {
     total_income: number;
     total_expense: number;

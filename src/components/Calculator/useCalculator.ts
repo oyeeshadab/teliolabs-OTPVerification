@@ -1,7 +1,16 @@
 import { useMemo, useState } from 'react';
 
-export const useCalculator = ({ setAmount }) => {
-  const [expression, setExpression] = useState<string>('');
+export const useCalculator = ({
+  amount,
+  setAmount,
+}: {
+  amount: number | string;
+  setAmount: (amount: number) => void;
+}) => {
+  // const [expression, setExpression] = useState<string>(amount || '');
+  const [expression, setExpression] = useState<string>(
+    amount !== undefined && amount !== null ? String(amount) : '',
+  );
 
   const appendValue = (value: string) => {
     setExpression(prev => prev + value);
@@ -18,11 +27,6 @@ export const useCalculator = ({ setAmount }) => {
   // 🔥 Safe evaluation
   const result = useMemo(() => {
     try {
-      if (!expression) {
-        setAmount(0);
-        return 0;
-      }
-
       // Replace × and ÷
       const sanitized = expression.replace(/×/g, '*').replace(/÷/g, '/');
 
@@ -35,7 +39,7 @@ export const useCalculator = ({ setAmount }) => {
       setAmount(evaluated);
       return evaluated;
     } catch {
-      setAmount(0);
+      // setAmount(0);
       return 0;
     }
   }, [expression]);

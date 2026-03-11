@@ -1,12 +1,10 @@
 import { AppTheme } from '@theme/themes';
 import { Dimensions, StyleSheet } from 'react-native';
-const { width } = Dimensions.get('window');
 export const useStyle = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#0d0d0d',
-      // paddingHorizontal: 18,
     },
 
     header: {
@@ -142,12 +140,13 @@ export const useStyle = (theme: AppTheme) =>
       justifyContent: 'space-around',
     },
     buttonContainer: {
-      height: 50,
+      height: 45,
       width: Dimensions.get('window').width - 40,
       borderRadius: 10,
-      alignItems: 'center',
       justifyContent: 'center',
       elevation: 15,
+      backgroundColor: theme.colors.white,
+      paddingHorizontal: 10,
     },
     actionButtonContainer: {
       flexDirection: 'row',
@@ -157,5 +156,21 @@ export const useStyle = (theme: AppTheme) =>
     bottomSheetWrapper: {
       backgroundColor: theme.colors.white,
       display: 'none',
+    },
+    sectionHeader: {
+      fontSize: 16,
+      marginVertical: 8,
+      color: theme.colors.black,
+    },
+    contentContainer: { paddingBottom: 160 },
+    transactionListContainer: {
+      maxHeight: Dimensions.get('window').height / 1.9,
+    },
+    sectionHeaderContainer: {
+      height: 40,
+      backgroundColor: 'white',
+      paddingHorizontal: 10,
+      justifyContent: 'center',
+      borderRadius: 10,
     },
   });

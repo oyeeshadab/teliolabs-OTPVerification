@@ -20,10 +20,22 @@ import { AmountCalculator } from '@components/Calculator/Calulator';
 import { TransactionTypeToggle } from '@components/TransactionTypeToggle/TransactionTypeToggle';
 import { CategoryGrid } from '@components/FinanceTracker/Components/CategoryGrid/CategoryGrid';
 import { darkenHex, lightenHex } from '@utils/color';
+import { RouteProp } from '@react-navigation/native';
 
-const AddTransaction = () => {
+import { RootStackParamList } from '@navigation/AppNavigator';
+
+type AddTransactionRouteProp = RouteProp<RootStackParamList, 'AddTransaction'>;
+
+type Props = {
+  route: AddTransactionRouteProp;
+};
+const AddTransaction: React.FC<Props> = ({ route }) => {
+  // const route = useRoute();
+  const { item } = route?.params || {};
+
   const {
     type,
+    title,
     amount,
     setType,
     titleRef,
@@ -34,7 +46,7 @@ const AddTransaction = () => {
     scaleAnim,
     opacityAnim,
     toastMessage,
-    nextGradient,
+    nextColorRef,
     buttonConfig,
     onColorPress,
     selectedColor,
@@ -44,9 +56,8 @@ const AddTransaction = () => {
     currentGradient,
     selectedCategory,
     createTransaction,
-  } = useTransaction();
+  } = useTransaction(item);
   const styles = useStyle();
-
   const { hours, minutes, ampm } = getCurrentTime();
 
   return (
@@ -61,15 +72,19 @@ const AddTransaction = () => {
           style={[
             styles.revealCircle,
             {
-              left: ripplePos.x,
-              top: ripplePos.y,
+              left: ripplePos.current.x,
+              top: ripplePos.current.y,
               opacity: opacityAnim,
               transform: [{ scale: scaleAnim }],
             },
           ]}
         >
           <LinearGradient
-            colors={nextGradient}
+            colors={[
+              lightenHex(nextColorRef.current),
+              darkenHex(nextColorRef.current),
+              '#000000',
+            ]}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
@@ -82,11 +97,13 @@ const AddTransaction = () => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollViewContent}
             >
-              <TransactionTypeToggle
-                selectedColor={selectedColor}
-                type={type}
-                setType={setType}
-              />
+              {selectedColor && (
+                <TransactionTypeToggle
+                  selectedColor={selectedColor}
+                  type={type}
+                  setType={setType}
+                />
+              )}
 
               <View style={styles.amountCard}>
                 <CategoryIcon icon_name={selectedCategory?.icon} />
@@ -109,7 +126,7 @@ const AddTransaction = () => {
 
               <TextInput
                 ref={titleRef}
-                // autoFocus
+                value={title}
                 style={styles.input}
                 placeholder="Title"
                 placeholderTextColor="rgba(255,255,255,0.5)"

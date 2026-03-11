@@ -1,6 +1,5 @@
 import { AppTheme } from '@theme/themes';
-import { Dimensions, StyleSheet } from 'react-native';
-const { width } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 export const useStyle = (theme: AppTheme) =>
   StyleSheet.create({
     card: {
@@ -33,5 +32,5 @@ export const useStyle = (theme: AppTheme) =>
       alignItems: 'center',
       marginRight: 12,
     },
-    txAmount: { color: theme.colors.white },
+    // txAmount: { color: theme.colors.white },
   });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,52 +15,62 @@ interface Props {
   setType: (value: 'expense' | 'income') => void;
 }
 
-export const TransactionTypeToggle = ({
-  selectedColor,
-  type,
-  setType,
-}: Props) => {
-  console.log('🚀 ~ TransactionTypeToggle ~ type:', selectedColor, type);
+// export const TransactionTypeToggle = ({
+//   selectedColor,
+//   type,
+//   setType,
+// }: Props) => {
+export const TransactionTypeToggle = React.memo(
+  ({ type, selectedColor, setType }: Props) => {
+    const { width, translateX, onLayout } = useTransactionTypeToggle({ type });
 
-  const { width, translateX, onLayout } = useTransactionTypeToggle({ type });
+    useEffect(() => {
+      console.log(
+        '🚀 ~ TransactionTypeToggle ~ type:',
+        selectedColor,
+        type,
+        'selectedColor, type',
+      );
+    }, []);
 
-  return (
-    <View style={styles.bannerContainer} onLayout={onLayout}>
-      {/* Sliding Indicator */}
-      <Animated.View
-        style={[
-          styles.indicator,
-          {
-            width: width / 2,
-            // backgroundColor: 'green',
-            backgroundColor: darkenHex(selectedColor),
-            transform: [{ translateX }],
-          },
-        ]}
-      />
+    return (
+      <View style={styles.bannerContainer} onLayout={onLayout}>
+        {/* Sliding Indicator */}
+        <Animated.View
+          style={[
+            styles.indicator,
+            {
+              width: width / 2,
+              // backgroundColor: 'green',
+              backgroundColor: darkenHex(selectedColor),
+              transform: [{ translateX }],
+            },
+          ]}
+        />
 
-      <TouchableOpacity
-        style={styles.tab}
-        activeOpacity={0.8}
-        onPress={() => setType('expense')}
-      >
-        <Text style={[styles.text, type === 'expense' && styles.activeText]}>
-          • Expense
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tab}
+          activeOpacity={0.8}
+          onPress={() => setType('expense')}
+        >
+          <Text style={[styles.text, type === 'expense' && styles.activeText]}>
+            • Expense
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.tab}
-        activeOpacity={0.8}
-        onPress={() => setType('income')}
-      >
-        <Text style={[styles.text, type === 'income' && styles.activeText]}>
-          • Income
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+        <TouchableOpacity
+          style={styles.tab}
+          activeOpacity={0.8}
+          onPress={() => setType('income')}
+        >
+          <Text style={[styles.text, type === 'income' && styles.activeText]}>
+            • Income
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   bannerContainer: {

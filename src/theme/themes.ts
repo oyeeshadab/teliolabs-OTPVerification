@@ -25,6 +25,8 @@ export const lightTheme = {
     secondaryBlack: '#242424',
     primaryBackground: '#191A1F',
     secondaryBackground: '#CEC0BB',
+    red: '#F87171',
+    green: '#34D399',
   },
 };
 

@@ -1,5 +1,5 @@
 import { View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@theme/ThemeProvider';
 import { useStyle } from './styles';
 import Text from '@components/Text/Text';
@@ -7,6 +7,7 @@ import Text from '@components/Text/Text';
 const Header = () => {
   const { theme } = useTheme();
   const styles = useStyle(theme);
+
   return (
     <View style={styles.container}>
       <View>
