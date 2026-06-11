@@ -18,6 +18,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import Text from '@components/Text/Text';
 import { User } from '@database/types';
 import { UserRepo } from '@database/repository/user.repo';
+import { useSelector } from 'react-redux';
 
 interface ProfilePageProps {
   userName?: string;
@@ -32,10 +33,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userAvatar }) => {
   const [notifications, setNotifications] = useState(true);
   const { theme } = useTheme();
   const styles = useStyle(theme);
-  const [user, setUser] = useState<User | null>(null);
-
-  UserRepo.getCurrentLoggedInUser().then(userVal => {
-    setUser(userVal);
+  const user = useSelector((state: { user: { currentUser: User } }) => {
+    return state.user.currentUser;
   });
 
   const menuItems = [
@@ -94,7 +93,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userAvatar }) => {
   ];
 
   const updateAuthorized = async () => {
-    // await DatabaseManagerRepo.dropDatabase();
     await UserRepo.logoutCurrentUser();
     Alert.alert('Logged Out', 'You have been logged out successfully');
     navigation.reset({

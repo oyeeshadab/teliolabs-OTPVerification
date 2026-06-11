@@ -21,6 +21,7 @@
       "@types/*": ["src/types/*"],
       "@constants/*": ["src/constants/*"],
       "@database/*": ["src/database/*"],
+      "@redux/*": ["src/redux/*"],
       "@app-types/*": ["src/types/*"]
     },
 

@@ -20,6 +20,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import { DatabaseManagerRepo } from '@database/repository/databasemanager.repo';
 import { UserRepo } from '@database/repository/user.repo';
 import { User } from '@database/types';
+import { useSelector } from 'react-redux';
 
 interface SettingsScreenProps {
   userName?: string;
@@ -28,7 +29,10 @@ interface SettingsScreenProps {
 const SettingsScreen: React.FC<SettingsScreenProps> = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
+  const user = useSelector((state: { user: { currentUser: User } }) => {
+    return state.user.currentUser;
+  });
 
   // State for settings
   const [notifications, setNotifications] = useState(true);
@@ -39,12 +43,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
   const [weeklyReport, setWeeklyReport] = useState(true);
   const [spendingAlerts, setSpendingAlerts] = useState(true);
 
-  useEffect(() => {
-    UserRepo.getCurrentLoggedInUser().then(userVal => {
-      setUser(userVal);
-      setBiometricLogin(userVal?.isFingerprintEnable === 1);
-    });
-  }, [UserRepo]);
   const biometricUpdate = (value: boolean) => {
     console.log('🚀 ~ biometricUpdate ~ value:', value);
     UserRepo.updateBiometricStatus(user?.email || '', value ? 1 : 0);

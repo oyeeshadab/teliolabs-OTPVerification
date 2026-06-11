@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "packages": {
+    "sqlite-simplifier": {
+      "signature": "c3eb0767336746e286f7515bf258c7d6",
+      "file": true,
+      "replaced": "/Users/apple/Projects/NPM/sqlite-simplifier"
+    },
+    "prismadb": {
+      "signature": "aa7ac9d4e7c4dbb6450706e4badbf50b",
+      "file": true,
+      "replaced": "/Users/apple/Projects/NPM/prismadb"
+    }
+  }
+}

@@ -1,8 +1,14 @@
 import { useTheme } from '@theme/ThemeProvider';
-import { useCallback, useState } from 'react';
-import { CurrentMonthTxResponse, TransactionSection } from '@database/types';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  CurrentMonthTxResponse,
+  TransactionSection,
+  User,
+} from '@database/types';
 import { TransactionRepo } from '@database/repository';
 import { useFocusEffect } from '@react-navigation/native';
+import { Simplifier } from '@database/repository/simplifier.repo';
+import { useSelector } from 'react-redux';
 
 export const useFinance = () => {
   const { theme } = useTheme();
@@ -10,14 +16,17 @@ export const useFinance = () => {
   const [transactions, setTransactions] = useState<TransactionSection[]>([]);
   const [total_expense, setTotal_expense] = useState<number>(0);
   const [total_income, setTotal_income] = useState<number>(0);
-
+  const user = useSelector((state: { user: { currentUser: User } }) => {
+    return state.user.currentUser;
+  });
+  console.log('🚀 ~ useFinance ~ user:', user);
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
       const fetchData = async () => {
         try {
           const res: CurrentMonthTxResponse =
-            await TransactionRepo.getCurrentMonthTransactions();
+            await TransactionRepo.getCurrentMonthTransactions(user?.id || -1);
           if (isActive) {
             setTotal_income(res?.summary?.total_income);
             setTotal_expense(res?.summary?.total_expense);
@@ -41,8 +50,20 @@ export const useFinance = () => {
       return () => {
         isActive = false;
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
+
+  useEffect(() => {
+    async function fetch() {
+      const getTransactionCount = await Simplifier.getTransactionCount();
+      console.log(
+        '🚀 ~ fetch ~ getTransactionCount:getTransactionCount',
+        getTransactionCount,
+      );
+    }
+    fetch();
+  }, []);
 
   const Buttons = [
     {

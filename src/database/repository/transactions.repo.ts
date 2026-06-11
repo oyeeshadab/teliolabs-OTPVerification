@@ -1,11 +1,15 @@
 import { CurrentMonthTxResponse, Transaction } from '@database/types';
-import { getDB } from '../db';
+import { getDB, getSimplifierDB } from '../db';
 import { TransactionSMSRepo } from './transactionsSMS.repo';
 import { UserRepo } from './user.repo';
+import { createAdvancedQuery } from 'sqlite-simplifier';
+import {
+  count,
+  where,
+} from '../../../.yalc/sqlite-simplifier/src/advanced-queries';
 
 export const TransactionRepo = {
   createTransaction: async (payload: Transaction) => {
-    const user = await UserRepo.getCurrentLoggedInUser();
     try {
       const db = await getDB();
 
@@ -21,7 +25,7 @@ export const TransactionRepo = {
           payload.type,
           payload.category_id,
           payload.note || '',
-          user?.id,
+          payload?.user_id,
           datetime,
         ],
       );
@@ -109,9 +113,66 @@ export const TransactionRepo = {
     }
   },
 
-  getCurrentMonthTransactions: async (): Promise<CurrentMonthTxResponse> => {
+  getCurrentMonthTransactions: async (
+    user_id: number,
+  ): Promise<CurrentMonthTxResponse> => {
     const db = await getDB();
-    const user = await UserRepo.getCurrentLoggedInUser();
+
+    const db2 = await getSimplifierDB();
+    const query = createAdvancedQuery(db2);
+    const result = await query.find('transactions', {
+      // select: {
+      //   id: 'id',
+      //   amount: 'amount',
+      //   datetime: 'datetime',
+      //   type: 'type',
+
+      //   tx_date: 'date(datetime)',
+
+      //   category_id: 'categories.id',
+      //   category_name: 'categories.name',
+      //   category_icon: 'categories.icon',
+      //   category_iconLibrary: 'categories.iconLibrary',
+      //   category_color: 'categories.color',
+      // },
+
+      include: {
+        tableName: 'categories',
+        localKey: 'category_id',
+        foreignKey: 'id',
+        type: 'left',
+      },
+
+      where: [
+        where('user_id', '=', user_id),
+        where('datetime', '>=', "date('now','start of month')"),
+        where('datetime', '<', "date('now','start of month','+1 month')"),
+      ],
+
+      orderBy: {
+        field: 'datetime',
+        direction: 'DESC',
+      },
+    });
+    console.log(
+      '🚀 ~ query.findresult:',
+      result,
+      ' . ',
+      `SELECT 
+      t.*,
+      date(t.datetime) as tx_date,
+      c.id as category_id,
+      c.name as category_name,
+      c.icon as category_icon,
+      c.iconLibrary as category_iconLibrary,
+      c.color as category_color
+    FROM transactions t
+    LEFT JOIN categories c ON t.category_id = c.id
+    WHERE t.user_id = ${user_id}
+    AND t.datetime >= date('now','start of month')
+    AND t.datetime < date('now','start of month','+1 month')
+    ORDER BY t.datetime DESC`,
+    );
 
     const tx = await db.executeSql(`
     SELECT 
@@ -124,7 +185,7 @@ export const TransactionRepo = {
       c.color as category_color
     FROM transactions t
     LEFT JOIN categories c ON t.category_id = c.id
-    WHERE t.user_id = ${user?.id}
+    WHERE t.user_id = ${user_id}
     AND t.datetime >= date('now','start of month')
     AND t.datetime < date('now','start of month','+1 month')
     ORDER BY t.datetime DESC
@@ -135,7 +196,7 @@ export const TransactionRepo = {
       COALESCE(SUM(CASE WHEN type='income' THEN amount END),0) as total_income,
       COALESCE(SUM(CASE WHEN type='expense' THEN amount END),0) as total_expense
     FROM transactions
-    WHERE user_id = ${user?.id}
+    WHERE user_id = ${user_id}
     AND datetime >= date('now','start of month')
     AND datetime < date('now','start of month','+1 month')
   `);

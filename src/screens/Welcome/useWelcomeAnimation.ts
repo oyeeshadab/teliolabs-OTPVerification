@@ -3,12 +3,14 @@ import { useToast } from '../../components/Toast/useToast';
 import { UserRepo } from '@database/repository/user.repo';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@navigation/RootNavigator';
+import { store } from '@redux/store';
+import { setUser } from '@redux/store/userSlice';
 
 type NavigationProps = NavigationProp<RootStackParamList>;
 
 export const useWelcomeAnimation = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState(__DEV__ ? 'Shadab' : '');
+  const [email, setEmail] = useState(__DEV__ ? 'shadab@quasarbytes.com' : '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NavigationProps>();
@@ -51,7 +53,9 @@ export const useWelcomeAnimation = () => {
     try {
       // This will either get existing user or create new one
       const authenticatedUser = await UserRepo.getOrCreateUser({ name, email });
-      if (authenticatedUser) {
+      console.log('🚀 ~ handleAuth ~ authenticatedUser:', authenticatedUser);
+      if (authenticatedUser?.hasOwnProperty('email')) {
+        store.dispatch(setUser(authenticatedUser || null));
         navigation?.replace('SecretNavigator');
       }
     } catch (err) {

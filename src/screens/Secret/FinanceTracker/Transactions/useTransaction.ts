@@ -1,6 +1,6 @@
 import { BottomSheetRef } from '@components/BottomSheet/BottomSheetComponent';
 import { TransactionRepo } from '@database/repository';
-import { Category, Transaction } from '@database/types';
+import { Category, Transaction, User } from '@database/types';
 import { darkenHex, lightenHex } from '@utils/color';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BottomSheetDisplayType } from '@app-types/Transactions.types';
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 const CIRCLE_SIZE = 60;
@@ -49,11 +50,9 @@ export const useTransaction = (item: Transaction | undefined) => {
   const opacityAnim = useRef(new Animated.Value(1)).current;
   const nextColorRef = useRef('#000000');
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 100);
-  // }, []);
+  const user = useSelector((state: { user: { currentUser: User } }) => {
+    return state.user.currentUser;
+  });
 
   useEffect(() => {
     if (showToast) {
@@ -165,6 +164,7 @@ export const useTransaction = (item: Transaction | undefined) => {
       dateTime: item?.dateTime,
       id: item?.id, // undefined for create
       smsType: item?.smsType || false,
+      user_id: user?.id,
     };
 
     const result = item?.hasOwnProperty('category_color')

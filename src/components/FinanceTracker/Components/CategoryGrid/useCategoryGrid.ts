@@ -80,6 +80,8 @@ export const useCategoryGrid = (navigation?: any) => {
       const res = await CategoriesRepo.getAllCategories({
         signal: abortController.current.signal,
       });
+      alert('dfsd');
+      console.log('🚀 ~ useCategoryGrid ~ res:', res);
 
       if (isMounted.current) {
         categoriesCache.current = res;

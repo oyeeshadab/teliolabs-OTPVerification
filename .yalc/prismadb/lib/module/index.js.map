@@ -1,0 +1,1 @@
+{"version":3,"names":["useNetworkStatus","default","NetworkManager"],"sources":["index.ts"],"sourcesContent":["export { useNetworkStatus } from \"./useNetworkStatus\";\nexport { default as NetworkManager } from \"./NetworkManager\";\n"],"mappings":"AAAA,SAASA,gBAAgB,QAAQ,oBAAoB;AACrD,SAASC,OAAO,IAAIC,cAAc,QAAQ,kBAAkB","ignoreList":[]}

@@ -8,6 +8,8 @@ import { ToastProvider } from './src/components/Toast/ToastProvider';
 import { initDatabase } from './src/database';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PortalProvider } from '@gorhom/portal';
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store';
 
 const AppContent = () => {
   return (
@@ -27,13 +29,16 @@ const App = () => {
     requestNotificationPermission();
     initDatabase();
   }, []);
+
   return (
     <GestureHandlerRootView>
       <PortalProvider>
         <SafeAreaProvider>
           <ThemeProvider>
             <ToastProvider>
-              <AppContent />
+              <Provider store={store}>
+                <AppContent />
+              </Provider>
             </ToastProvider>
           </ThemeProvider>
         </SafeAreaProvider>

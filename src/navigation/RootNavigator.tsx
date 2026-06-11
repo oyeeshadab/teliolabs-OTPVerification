@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   NavigationContainer,
   NavigatorScreenParams,
@@ -10,6 +10,8 @@ import LottieView from 'lottie-react-native';
 import { BiometricGate } from '../security/BiometricGate';
 import BottomTabs from './BottomTabs';
 import { UserRepo } from '@database/repository/user.repo';
+import { store } from '@redux/store';
+import { setUser } from '@redux/store/userSlice';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -27,21 +29,25 @@ export const RootNavigator = () => {
     null,
   );
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean | null>(null);
-  UserRepo.getCurrentLoggedInUser()
-    .then(user => {
-      if (user?.hasOwnProperty('email')) {
-        setIsUserLoggedIn(true);
-        if (user?.isFingerprintEnable) {
-          setIsSecretLoggedIn(true);
+
+  useEffect(() => {
+    UserRepo.getCurrentLoggedInUser()
+      .then(user => {
+        if (user?.hasOwnProperty('email') && user?.is_logged_in === 1) {
+          store.dispatch(setUser(user || null));
+          setIsUserLoggedIn(true);
+          if (user?.isFingerprintEnable) {
+            setIsSecretLoggedIn(true);
+          }
+        } else {
+          setIsUserLoggedIn(false);
         }
-      } else {
+      })
+      .catch(err => {
         setIsUserLoggedIn(false);
-      }
-      console.log('getCurrentLoggedInUsergetCurrentLoggedInUser', user);
-    })
-    .catch(err => {
-      console.error('Error fetching current logged in user:', err);
-    });
+        console.log('Error fetching current logged in user:', err);
+      });
+  }, []);
 
   if (isUserLoggedIn === null) {
     return (

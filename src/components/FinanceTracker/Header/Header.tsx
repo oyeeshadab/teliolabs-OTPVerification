@@ -1,13 +1,13 @@
 import { View, TouchableOpacity, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTheme } from '@theme/ThemeProvider';
 import { useStyle } from './styles';
 import Text from '@components/Text/Text';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { UserRepo } from '@database/repository/user.repo';
 import { User } from '@database/types';
+import { useSelector } from 'react-redux';
 
 interface Props {
   backButton: boolean;
@@ -30,10 +30,9 @@ const Header = ({
   const { theme } = useTheme();
   const styles = useStyle(theme);
   const navigation = useNavigation();
-  const [user, setUser] = useState<User | null>(null);
 
-  UserRepo.getCurrentLoggedInUser().then(userVal => {
-    setUser(userVal);
+  const user = useSelector((state: { user: { currentUser: User } }) => {
+    return state.user.currentUser;
   });
 
   return (

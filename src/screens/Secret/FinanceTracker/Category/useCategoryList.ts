@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
-import { CategoriesRepo } from '@database/repository';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { CategoriesRepo } from '@database/repository';
 
 export type Category = {
   id: string;
@@ -14,32 +14,41 @@ export type Category = {
 export const useCategoryList = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
+  const isFetchingRef = useRef(false);
 
   const navigation = useNavigation();
 
-  // Load categories
   const loadCategories = useCallback(async () => {
+    if (isFetchingRef.current) {
+      return;
+    }
+
     try {
+      isFetchingRef.current = true;
+
       setLoading(true);
+
       const res = await CategoriesRepo.getAllCategories();
+
       setCategories(res);
     } catch (error) {
       console.error('Failed to load categories:', error);
     } finally {
       setLoading(false);
+
+      isFetchingRef.current = false;
     }
   }, []);
 
-  // Refresh categories (stable)
   const refreshCategories = useCallback(async () => {
     await loadCategories();
   }, [loadCategories]);
 
-  // Add category
   const addCategory = useCallback(
     async (name: string, icon: string, color: string): Promise<boolean> => {
       if (!name.trim()) {
         Alert.alert('Error', 'Please enter a category name');
+
         return false;
       }
 
@@ -49,6 +58,7 @@ export const useCategoryList = () => {
 
       if (exists) {
         Alert.alert('Error', 'Category already exists');
+
         return false;
       }
 
@@ -61,16 +71,17 @@ export const useCategoryList = () => {
         });
 
         await refreshCategories();
+
         return true;
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
+
         return false;
       }
     },
     [categories, refreshCategories],
   );
 
-  // Update category
   const updateCategory = useCallback(
     async (
       id: string,
@@ -80,6 +91,7 @@ export const useCategoryList = () => {
     ): Promise<boolean> => {
       if (!name.trim()) {
         Alert.alert('Error', 'Please enter a category name');
+
         return false;
       }
 
@@ -90,6 +102,7 @@ export const useCategoryList = () => {
 
       if (exists) {
         Alert.alert('Error', 'Duplicate category name');
+
         return false;
       }
 
@@ -102,60 +115,59 @@ export const useCategoryList = () => {
         });
 
         await refreshCategories();
+
         return true;
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
+
         return false;
       }
     },
     [categories, refreshCategories],
   );
 
-  // Delete category
   const deleteCategory = useCallback(
     async (id: number, deleteCategoryFlag?: boolean): Promise<boolean> => {
       try {
         await CategoriesRepo.deleteCategory(id);
+
         await refreshCategories();
+
         if (deleteCategoryFlag) {
           navigation.goBack();
-          return true;
         }
+
         return true;
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
+
         return false;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [refreshCategories],
+    [navigation, refreshCategories],
   );
 
-  // Get category
   const getCategoryById = useCallback(
     (id: string) => categories.find(cat => cat.id === id),
     [categories],
   );
 
-  // Initial load
-  useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
-
-  // FIXED: Proper useFocusEffect
   useFocusEffect(
     useCallback(() => {
-      refreshCategories();
-    }, [refreshCategories]),
+      loadCategories();
+    }, [loadCategories]),
   );
 
   return {
     categories,
     loading,
+
     addCategory,
     updateCategory,
     deleteCategory,
+
     getCategoryById,
+
     refreshCategories,
   };
 };

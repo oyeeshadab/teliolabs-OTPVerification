@@ -20,6 +20,7 @@ module.exports = {
           '@constants': './src/constants',
           '@types': './src/types',
           '@database': './src/database',
+          '@redux': './src/redux',
           '@app-types': './src/types',
         },
       },

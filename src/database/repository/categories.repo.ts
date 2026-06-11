@@ -1,21 +1,95 @@
 import { Category } from '@database/types';
-import { getDB } from '../db';
+import { getDB, getSimplifierDB } from '../db';
+import { createAdvancedQuery } from 'sqlite-simplifier';
 
 export const CategoriesRepo = {
   getAllCategories: async (): Promise<any[]> => {
-    const db = await getDB();
+    console.log('countcountcountcountcountcountcountcount');
 
-    const res = await db.executeSql(`
-    SELECT 
-      c.*,
-      COUNT(t.id) as transactionCount
-    FROM categories c
-    LEFT JOIN transactions t 
-      ON t.category_id = c.id
-    GROUP BY c.id
-  `);
+    const db = await getSimplifierDB();
+    const query = createAdvancedQuery(db);
 
-    return res[0].rows.raw();
+    const result = await query.find('categories', {
+      include: {
+        tableName: 'transactions',
+        localKey: 'id',
+        foreignKey: 'category_id',
+        type: 'left',
+      },
+      groupBy: 'categories.id',
+      count: {
+        column: 'transactions.id',
+        as: 'transactionCount',
+      },
+    });
+
+    return result;
+
+    // query.defineRelations('categories', {
+    //   transactions: {
+    //     table: 'transactions',
+    //     localKey: 'id',
+    //     foreignKey: 'category_id',
+    //     type: 'left',
+    //   },
+    // });
+
+    // // Use the fluent API
+    // const result = await query
+    //   .query('categories')
+    //   .select('id', 'name', 'icon', 'color')
+    //   .leftJoin('transactions')
+    //   .count('transactionCount', 'transactions.id')
+    //   .groupBy('categories.id')
+    //   .get();
+
+    // console.log('🚀 ~ result:', result);
+    // console.log('🚀 ~ result:', result);
+    // return [];
+
+    // const db = await getSimplifierDB();
+    // const query = createAdvancedQuery(db);
+
+    // query.defineRelations('categories', {
+    //   transactions: {
+    //     table: 'transactions',
+    //     localKey: 'id',
+    //     foreignKey: 'category_id',
+    //     type: 'left',
+    //   },
+    // });
+    // const result = await query.find('categories', {
+    //   select: {
+    //     id: 'id',
+    //     name: 'name',
+    //     icon: 'icon',
+    //     color: 'color',
+
+    //     transactionCount: `${count('transactions.id')}`,
+    //   },
+    //   include: {
+    //     transactions: true,
+    //   },
+    //   groupBy: 'categories.id',
+    // });
+    // console.log('🚀 ~ result:', result);
+
+    // return result;
+
+    // const db = await getDB();
+
+    // const res = await db.executeSql(`
+    //   SELECT
+    //     c.*,
+    //     COUNT(t.id) as transactionCount
+    //   FROM categories c
+    //   LEFT JOIN transactions t
+    //     ON t.category_id = c.id
+    //   GROUP BY c.id
+    // `);
+
+    // console.log('🚀 ~ res:', res[0].rows.raw());
+    // return res[0].rows.raw();
   },
   createCategory: async (payload: Category) => {
     try {

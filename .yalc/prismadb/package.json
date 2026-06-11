@@ -1,0 +1,73 @@
+{
+  "name": "prismadb",
+  "version": "1.0.0",
+  "description": "A powerful and intuitive query builder for React Native SQLite Storage, designed to simplify database interactions and enhance developer productivity.",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "react-native": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "source": "src/index.ts",
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bob build",
+    "clean": "rimraf lib",
+    "watch": "bob build --watch",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-sqlite-storage",
+    "sqlite",
+    "sqlite3",
+    "database",
+    "query-builder",
+    "offline-first",
+    "storage",
+    "local-database",
+    "typescript",
+    "sql",
+    "orm",
+    "react-native-database",
+    "mobile-database",
+    "fluent-api",
+    "sqlite-wrapper",
+    "sqlite-helper",
+    "sqlite-simplifier"
+  ],
+  "author": "Shadab Hussain",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oyeeshadab/sqlite-simplifier.git"
+  },
+  "homepage": "https://github.com/oyeeshadab/sqlite-simplifier#readme",
+  "bugs": {
+    "url": "https://github.com/oyeeshadab/sqlite-simplifier/issues"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-sqlite-storage": "*"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "sideEffects": false,
+  "@react-native-community/bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "dependencies": {
+    "@react-native-community/netinfo": "^12.0.1"
+  },
+  "yalcSig": "aa7ac9d4e7c4dbb6450706e4badbf50b"
+}

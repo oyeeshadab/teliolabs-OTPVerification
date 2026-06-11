@@ -38,6 +38,7 @@ export interface Transaction {
   category_icon?: string;
   category_color?: string;
   smsType?: boolean;
+  user_id?: number;
 }
 export interface SMSTransaction {
   id?: number;

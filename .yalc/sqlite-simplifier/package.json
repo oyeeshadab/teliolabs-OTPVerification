@@ -1,0 +1,42 @@
+{
+  "name": "sqlite-simplifier",
+  "version": "1.0.0",
+  "description": "Simplify SQLite operations in React Native",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "react-native": "src/index.ts",
+  "types": "lib/typescript/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bob build",
+    "clean": "rimraf lib",
+    "watch": "bob build --watch"
+  },
+  "keywords": [
+    "sqlite",
+    "database",
+    "react-native",
+    "sqlite-simplifier"
+  ],
+  "author": "Shadab Hussain",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-sqlite-storage": "*"
+  },
+  "@react-native-community/bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "yalcSig": "c3eb0767336746e286f7515bf258c7d6"
+}
